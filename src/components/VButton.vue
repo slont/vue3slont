@@ -1,8 +1,8 @@
 <template lang="pug">
-  button.v-button(:class="{'processing': isProcessing}"
-                  :disabled="disabled || isProcessing"
-                  @click.stop="onClick")
-    slot
+button.v-button(:class="{'processing': isProcessing}"
+                :disabled="disabled || isProcessing"
+                @click.stop="onClick")
+  slot
 </template>
 
 <script lang="ts">
@@ -41,8 +41,8 @@
 </script>
 
 <style lang="sass" scoped>
-  .v-button
-    transition: all .2s ease
-    > span
-      display: inline-flex
+.v-button
+  transition: all .2s ease
+  > span
+    display: inline-flex
 </style>

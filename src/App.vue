@@ -1,12 +1,35 @@
-<template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+<template lang="pug">
+transition(name="slide-fade" mode="out-in")
+  router-view
+
+transition(:name="firstModalMixin.animation")
+  VModal(v-if="firstModalMixin.name" v-bind="firstModalMixin" v-model:name="firstModalMixin.name")
+transition(:name="secondModalMixin.animation")
+  VModal(v-if="secondModalMixin.name" v-bind="secondModalMixin" v-model:name="secondModalMixin.name")
+transition(:name="thirdModalMixin.animation")
+  VModal(v-if="thirdModalMixin.name" v-bind="thirdModalMixin" v-model:name="thirdModalMixin.name")
 </template>
+
+<script lang="ts">
+  import {provide} from 'vue'
+  import ModalMixin from '@/mixins/modal'
+  import {InjectionKeyEnum} from './enums'
+
+  export default {
+    setup(_, ctx) {
+      const firstModalMixin = ModalMixin(0)
+      const secondModalMixin = ModalMixin(1)
+      const thirdModalMixin = ModalMixin(2)
+      provide(InjectionKeyEnum.OPEN_FIRST_MODAL, firstModalMixin.openModal)
+      provide(InjectionKeyEnum.OPEN_SECOND_MODAL, secondModalMixin.openModal)
+      provide(InjectionKeyEnum.OPEN_THIRD_MODAL, thirdModalMixin.openModal)
+
+      return {
+        firstModalMixin, secondModalMixin, thirdModalMixin
+      }
+    }
+  }
+</script>
 
 <style lang="sass">
 #app

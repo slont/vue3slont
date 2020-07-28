@@ -3,5 +3,12 @@ import App from './App.vue'
 import './registerServiceWorker'
 import router from './router'
 import store from './store'
+import {setupComponents} from '@/plugins/components'
+import './assets/sass/global.sass'
 
-createApp(App as any).use(router).use(store).mount('#app')
+const app = createApp(App)
+    .use(router).use(store)
+
+setupComponents(app)
+
+app.mount('#app')
