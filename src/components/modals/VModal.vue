@@ -6,9 +6,7 @@ div.v-modal(:class="customClass" tabindex="-1")
   component.v-modal-card(
     :is="name"
     v-bind="props"
-    @close="closeForce"
-    @update:closable="setClosable"
-    @update:cb-blocked="setCallbackBlocked")
+    @close="closeForce")
 </template>
 
 <script lang="ts">
@@ -18,12 +16,9 @@ div.v-modal(:class="customClass" tabindex="-1")
   type Props = {
     name: string
     index: number
-  }
-
-  const DEFAULT_DATA = {
-    closable: true,
-    callback: () => ({}),
-    callbackBlocked: () => ({})
+    closable: boolean
+    callback: () => null
+    callbackBlocked: () => null
   }
 
   export default {
@@ -31,10 +26,12 @@ div.v-modal(:class="customClass" tabindex="-1")
       name: String,
       index: Number,
       props: Object,
-      customClass: String
+      customClass: String,
+      closable: {type: Boolean, default: true},
+      callback: {type: Function, default: () => null},
+      callbackBlocked: {type: Function, default: () => null}
     },
     setup(props: Props, ctx) {
-      const data = reactive(Object.assign({}, DEFAULT_DATA))
       const isClosing = ref(false)
       const forceClose = ref(false)
       const route = useRoute()
@@ -43,27 +40,24 @@ div.v-modal(:class="customClass" tabindex="-1")
       const modals = computed(() => route.query['modal[]'] || [])
 
       const close = async () => {
-        if (!data.closable || isClosing.value) return
+        if (!props.closable || isClosing.value) return
         isClosing.value = true
         await router.back()
       }
-      const closeForce = async (callback = () => ({})) => {
+      const closeForce = async () => {
         if (isClosing.value) return
         isClosing.value = true
         forceClose.value = true
-        data.callback = callback
         await router.back()
       }
-      const setClosable = (closable = true) => data.closable = closable
-      const setCallbackBlocked = (callback = () => ({})) => data.callbackBlocked = callback
       const onBack = () => {
         if (('string' === typeof modals.value && modals.value !== props.name) || (modals.value.length <= props.index)) {
-          if (data.closable || forceClose.value) {
-            // data.callback()
+          if (props.closable || forceClose.value) {
+            props.callback()
             ctx.emit('update:name', '')
           } else {
             router.forward()
-            data.callbackBlocked()
+            props.callbackBlocked()
           }
         }
       }
@@ -85,10 +79,8 @@ div.v-modal(:class="customClass" tabindex="-1")
         window.removeEventListener('popstate', onBack)
       })
 
-
       return {
-        close, closeForce, setClosable, setCallbackBlocked,
-        ...toRefs(data)
+        close, closeForce
       }
     }
   }

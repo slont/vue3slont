@@ -4,8 +4,8 @@ article.sample-modal(:class="customClass")
   main.v-modal-card-body
     button(@click="onOpenSampleModal2") Open SampleModal2
   footer.v-modal-card-footer
-    v-button(v-if="cancelText" :onclick="cancel") {{ cancelText }}
-    v-button(v-if="okText" :onclick="ok") {{ okText }}
+    v-button(v-if="cancelText" :onclick="onCancel") {{ cancelText }}
+    v-button(v-if="okText" :onclick="onOk") {{ okText }}
 </template>
 
 <script lang="ts">
@@ -17,8 +17,8 @@ article.sample-modal(:class="customClass")
     title: string
     content: string
     image: string
-    onOk: () => Promise<any>
-    onCancel: () => Promise<any>
+    ok: () => Promise<any>
+    cancel: () => Promise<any>
   }
 
   export default {
@@ -28,9 +28,9 @@ article.sample-modal(:class="customClass")
       content: String,
       image: String,
       okText: String,
-      onOk: {type: Function, default: () => Promise.resolve()},
+      ok: {type: Function, default: () => Promise.resolve()},
       cancelText: String,
-      onCancel: {type: Function, default: () => Promise.resolve()},
+      cancel: {type: Function, default: () => Promise.resolve()},
       customClass: String
     },
     setup(props: Props, {emit}) {
@@ -47,17 +47,17 @@ article.sample-modal(:class="customClass")
         })
       }
 
-      const ok = async () => {
-        await props.onOk()
+      const onOk = async () => {
+        await props.ok()
         emit('close')
       }
-      const cancel = async () => {
-        await props.onCancel()
+      const onCancel = async () => {
+        await props.cancel()
         emit('close')
       }
 
       return {
-        ok, cancel, onOpenSampleModal2
+        onOk, onCancel, onOpenSampleModal2
       }
     }
   }

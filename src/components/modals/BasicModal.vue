@@ -5,8 +5,8 @@ article.basic-modal(:class="customClass")
     figure(v-if="image"): img(:src="image")
     div(v-if="content") {{ content }}
   footer.v-modal-card-footer
-    v-button(v-if="cancelText" :onclick="cancel") {{ cancelText }}
-    v-button(v-if="okText" :onclick="ok") {{ okText }}
+    v-button(v-if="cancelText" :onclick="onCancel") {{ cancelText }}
+    v-button(v-if="okText" :onclick="onOk") {{ okText }}
 </template>
 
 <script lang="ts">
@@ -15,8 +15,8 @@ article.basic-modal(:class="customClass")
     content: string
     image: string
     closable: boolean
-    onOk: () => Promise<any>
-    onCancel: () => Promise<any>
+    ok: () => Promise<any>
+    cancel: () => Promise<any>
   }
 
   export default {
@@ -26,30 +26,23 @@ article.basic-modal(:class="customClass")
       content: String,
       image: String,
       okText: String,
-      onOk: {type: Function, default: () => Promise.resolve()},
+      ok: {type: Function, default: () => Promise.resolve()},
       cancelText: String,
-      onCancel: {type: Function, default: () => Promise.resolve()},
-      customClass: String,
-      closable: {
-        type: Boolean,
-        default: true
-      }
+      cancel: {type: Function, default: () => Promise.resolve()},
+      customClass: String
     },
     setup(props: Props, {emit}) {
-      const ok = async () => {
-        await props.onOk()
+      const onOk = async () => {
+        await props.ok()
         emit('close')
       }
-      const cancel = async () => {
-        await props.onCancel()
+      const onCancel = async () => {
+        await props.cancel()
         emit('close')
       }
-
-      /** Init **/
-      emit('update:closable', props.closable)
 
       return {
-        ok, cancel
+        onOk, onCancel
       }
     }
   }

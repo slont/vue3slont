@@ -1,10 +1,11 @@
 import {useRoute, useRouter} from 'vue-router'
 import {reactive, toRefs} from 'vue'
 
-type ModalOptions = {
+export type ModalOptions = {
   index: number
   name: string
   props: any
+  closable: boolean
   animation?: string
 }
 
@@ -13,6 +14,7 @@ export default (index: number) => {
     index,
     name: '',
     props: {},
+    closable: true,
     animation: 'zoom-out',
   })
 

@@ -16,7 +16,7 @@ transition(:name="thirdModalMixin.animation")
   import {InjectionKeyEnum} from './enums'
 
   export default {
-    setup(_, ctx) {
+    setup() {
       const firstModalMixin = ModalMixin(0)
       const secondModalMixin = ModalMixin(1)
       const thirdModalMixin = ModalMixin(2)
